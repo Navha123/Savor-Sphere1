@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fix Recipe Images</title>
+</head>
+<body>
+    <h1>Fix Recipe Images</h1>
+    <button onclick="fixImages()">Fix Sample Recipe Images</button>
+    <div id="output"></div>
+
+    <script>
+        function fixImages() {
+            const collections = JSON.parse(localStorage.getItem('userCollections') || '[]');
+            
+            collections.forEach(collection => {
+                collection.recipes.forEach(recipe => {
+                    if (recipe._id === 'sample-brownie-1' && (!recipe.images || recipe.images.length === 0)) {
+                        recipe.images = ['https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=500&h=300&fit=crop'];
+                    }
+                });
+            });
+            
+            localStorage.setItem('userCollections', JSON.stringify(collections));
+            document.getElementById('output').innerHTML = '<p style="color: green;">Images fixed! Refresh your app.</p>';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Collections</title>
+</head>
+<body>
+    <h1>Debug Collections Data</h1>
+    <button onclick="showCollections()">Show Collections</button>
+    <button onclick="addSampleRecipe()">Add Sample Recipe to Chocolate Brownies</button>
+    <button onclick="clearCollections()">Clear All Collections</button>
+    
+    <div id="output"></div>
+
+    <script>
+        function showCollections() {
+            const collections = JSON.parse(localStorage.getItem('userCollections') || '[]');
+            document.getElementById('output').innerHTML = '<pre>' + JSON.stringify(collections, null, 2) + '</pre>';
+        }
+
+        function addSampleRecipe() {
+            const collections = JSON.parse(localStorage.getItem('userCollections') || '[]');
+            
+            // Find chocolate brownies collection
+            let chocolateCollection = collections.find(c => c.name.toLowerCase().includes('chocolate') || c.name.toLowerCase().includes('brownie'));
+            
+            if (!chocolateCollection) {
+                // Create it if it doesn't exist
+                chocolateCollection = {
+                    _id: Date.now().toString(),
+                    name: 'Chocolate Brownies',
+                    recipes: [],
+                    createdAt: new Date().toISOString()
+                };
+                collections.push(chocolateCollection);
+            }
+
+            // Add sample recipe
+            const sampleRecipe = {
+                _id: 'sample-brownie-1',
+                title: 'Fudgy Chocolate Brownies',
+                description: 'Rich and fudgy chocolate brownies that melt in your mouth',
+                cookingTime: 45,
+                difficulty: 'Medium',
+                category: { name: 'Desserts' },
+                ingredients: [
+                    '1 cup butter',
+                    '2 cups sugar', 
+                    '4 eggs',
+                    '1 cup cocoa powder',
+                    '1 cup flour'
+                ],
+                steps: [
+                    'Preheat oven to 350°F',
+                    'Mix butter and sugar',
+                    'Add eggs one at a time',
+                    'Mix in cocoa and flour',
+                    'Bake for 30-35 minutes'
+                ],
+                images: ['https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=500&h=300&fit=crop'],
+                averageRating: 4.5,
+                ratings: [{rating: 5}, {rating: 4}],
+                author: { name: 'Chef Baker' }
+            };
+
+            // Check if recipe already exists
+            if (!chocolateCollection.recipes.some(r => r._id === sampleRecipe._id)) {
+                chocolateCollection.recipes.push(sampleRecipe);
+            }
+
+            localStorage.setItem('userCollections', JSON.stringify(collections));
+            alert('Sample recipe added to chocolate brownies collection!');
+            showCollections();
+        }
+
+        function clearCollections() {
+            localStorage.removeItem('userCollections');
+            alert('Collections cleared!');
+            showCollections();
+        }
+    </script>
+</body>
+</html>
